@@ -56,7 +56,12 @@ def check_solvable(k: int = 4, n: int = 24):
         combinations *= num_cards - i
         combinations //= i + 1
     
-    for indices in tqdm(itertools.combinations(range(len(cards)), k), total=combinations):
+    pbar = tqdm(enumerate(itertools.combinations(range(len(cards)), k)), total=combinations)
+    step = combinations // 10000
+    
+    for i, indices in pbar:
+        if i % step == 0:
+            pbar.set_description(f'Current percentage: {count}/{i}')
         count += calculate24([cards[i] for i in indices], n=n)
     probability = count / combinations
     return probability
