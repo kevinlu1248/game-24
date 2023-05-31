@@ -8,6 +8,7 @@ def calculate24(
     numbers: list[int], 
     n = 24,
     k = 4,
+    allow_fraction = True
 ):
     """
     Given a list of k numbers, return True if it is possible to use all k numbers
@@ -15,8 +16,7 @@ def calculate24(
     """
     for perm in itertools.permutations(numbers, k):
         for ops in itertools.product(['+', '-', '*', '/'], repeat=k-1): # get all possible combinations of operators
-            curr = perm[0]
-
+            curr: float = perm[0]
             for i in range(1, k):
                 op = ops[i - 1]
                 num = perm[i]
@@ -27,7 +27,7 @@ def calculate24(
                 elif op == '*':
                     curr *= num
                 elif op == '/':
-                    if curr % num != 0:
+                    if allow_fraction and curr % num != 0:
                         break
                     curr /= num
             else:
@@ -57,7 +57,7 @@ def check_solvable(k: int = 4):
     cache = {}
     percent = combinations // 100
     
-    # for indices in tqdm(itertools.combinations(range(len(cards)), k), total=combinations):
+    # for i, indices in tqdm(enumerate(itertools.combinations(range(len(cards)), k)), total=combinations):
     for i, indices in enumerate(itertools.combinations(range(len(cards)), k)):
         if i % percent == 0:
             print(f"{i}/{combinations}", end="\r")
